@@ -1,15 +1,15 @@
-import {Card} from "react-bootstrap";
+import { Card } from "react-bootstrap";
 
 import Book from "~/types/book";
 import BookDetailModal from "~/components/Modals/BookDetailModal/BookDetailModal";
-import {useState} from "react";
+import { useState } from "react";
 
 interface props {
 	book: Book,
 	handleAfterDelete: () => void,
 }
 
-export default function BookCard({...props}: props) {
+export default function BookCard({ ...props }: props) {
 	const title_len_max = 30;
 	const description_len_max = 40;
 
@@ -18,11 +18,11 @@ export default function BookCard({...props}: props) {
 	const handleClose = () => setShow(false);
 
 	const onClick = () => handleOpen();
-	return(
+	return (
 		<>
-			<button onClick={onClick} style={{margin: "5px"}}>
+			<button onClick={onClick} style={{ margin: "5px" }}>
 				<Card>
-					<Card.Body className="flex gap-5">
+					<Card.Body className="flex gap-5 w-[30rem] h-40">
 						<Card.Img variant="top" src={props.book.image_url} className="w-20" />
 						<div className="content-center">
 							<Card.Title>
@@ -44,7 +44,7 @@ export default function BookCard({...props}: props) {
 					</Card.Body>
 				</Card>
 			</button>
-			<BookDetailModal book={props.book} show={show} handleClose={handleClose} handleAfterDelete={props.handleAfterDelete}/>
+			<BookDetailModal book={props.book} show={show} handleClose={handleClose} handleAfterDelete={props.handleAfterDelete} />
 		</>
 	)
 }
