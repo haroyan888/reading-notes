@@ -1,7 +1,9 @@
 use crate::entitiy::book::BookInfo;
 use crate::handler::get_state;
 use crate::repos::book::{BookRepository, BookSearcher};
+use crate::repos::reading_note::ReadingNoteRepository;
 use crate::repos_impl::book::{BookRepositoryForJson, BookSearcherForGoogleAPI};
+use crate::repos_impl::reading_note::ReadingNoteRepositoryForJson;
 
 #[tauri::command]
 pub async fn all_book(app_handle: tauri::AppHandle) -> Result<Vec<BookInfo>, String> {
@@ -39,6 +41,23 @@ pub async fn create_book(
 pub async fn delete_book(app_handle: tauri::AppHandle, isbn_13: String) -> Result<(), String> {
     let state = get_state::<BookRepositoryForJson>(&app_handle).await?;
     let book_repos = state.lock().await;
+    let state = get_state::<ReadingNoteRepositoryForJson>(&app_handle).await?;
+    let reading_note_repos = state.lock().await;
+
+    let delete_reading_note_id_list = reading_note_repos
+        .all(&isbn_13)
+        .await
+        .map_err(|e| e.to_string())?
+        .iter()
+        .map(|reading_note| reading_note.id.clone())
+        .collect::<Vec<String>>();
+
+    for id in delete_reading_note_id_list {
+        reading_note_repos
+            .delete(&id)
+            .await
+            .map_err(|e| e.to_string())?;
+    }
 
     book_repos.delete(&isbn_13).await.map_err(|e| e.to_string())
 }

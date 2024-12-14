@@ -47,7 +47,7 @@ pub struct VolumeInfoResult {
     title: String,
     description: String,
     authors: Vec<String>,
-    publisher: String,
+    publisher: Option<String>,
     published_date: String,
     image_links: ImageLinks,
     industry_identifiers: Vec<Identifier>,
@@ -66,7 +66,7 @@ impl VolumeInfoResult {
             title: self.title.clone(),
             description: self.description.clone(),
             authors: self.authors.clone(),
-            publisher: self.publisher.clone(),
+            publisher: self.publisher.clone().unwrap_or_default(),
             published_date: self.published_date.clone(),
             image_url: self.image_links.thumbnail.clone(),
         }
