@@ -16,4 +16,5 @@ pub trait ReadingNoteRepository: Send + Sync + 'static {
     async fn all(&self, isbn_13: &str) -> Result<Vec<ReadingNote>, RepositoryError>;
     async fn create(&self, text: &str, isbn_13: &str) -> Result<ReadingNote, RepositoryError>;
     async fn delete(&self, id: &str) -> Result<(), RepositoryError>;
+    async fn delete_all(&self, isbn_13: &str) -> Result<(), RepositoryError>;
 }

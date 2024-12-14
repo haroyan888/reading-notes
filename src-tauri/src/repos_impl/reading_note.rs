@@ -64,4 +64,25 @@ impl ReadingNoteRepository for ReadingNoteRepositoryForJson {
             .map_err(|e| RepositoryError::Unexpected(e.to_string()))?;
         Ok(())
     }
+
+    async fn delete_all(&self, isbn_13: &str) -> Result<(), RepositoryError> {
+        let data = read::<ReadingNote>(&self.path)
+            .map_err(|e| RepositoryError::Unexpected(e.to_string()))?;
+
+        if !data
+            .iter()
+            .any(|reading_note| reading_note.isbn_13 == isbn_13)
+        {
+            return Err(RepositoryError::NotFound(isbn_13.to_string()));
+        }
+
+        let deleted_data = data
+            .iter()
+            .filter(|&reading_note| reading_note.isbn_13 != isbn_13)
+            .cloned()
+            .collect::<Vec<ReadingNote>>();
+        write::<ReadingNote>(&self.path, deleted_data)
+            .map_err(|e| RepositoryError::Unexpected(e.to_string()))?;
+        Ok(())
+    }
 }
