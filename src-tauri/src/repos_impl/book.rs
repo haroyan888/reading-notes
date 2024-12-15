@@ -61,6 +61,25 @@ impl BookRepository for BookRepositoryForJson {
         Ok(book_info.clone())
     }
 
+    async fn switch_complete(&self, isbn_13: &str) -> Result<BookInfo, RepositoryError> {
+        let mut write_data =
+            read::<BookInfo>(&self.path).map_err(|e| RepositoryError::Unexpected(e.to_string()))?;
+
+        let mut option_book = None;
+        for book in &mut write_data {
+            if book.isbn_13 == isbn_13 {
+                book.switch_complete();
+                option_book = Some(book.clone());
+            }
+        }
+        let res_book = option_book.ok_or(RepositoryError::NotFound(isbn_13.to_string()))?;
+
+        write::<BookInfo>(&self.path, write_data)
+            .map_err(|e| RepositoryError::Unexpected(e.to_string()))?;
+
+        Ok(res_book)
+    }
+
     async fn delete(&self, isbn_13: &str) -> Result<(), RepositoryError> {
         let data =
             read::<BookInfo>(&self.path).map_err(|e| RepositoryError::Unexpected(e.to_string()))?;

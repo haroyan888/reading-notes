@@ -11,6 +11,7 @@ import ConfirmDialog from "~/components/Modals/ConfirmDialog/ConfirmDialog";
 interface props {
 	book: Book,
 	show: boolean,
+	setBook: (book: Book) => void,
 	handleClose: () => void,
 	handleAfterDelete: () => void,
 }
@@ -27,6 +28,12 @@ export default function BookDetailModal({ ...props }: props) {
 	const getReadingNoteList = () => {
 		invoke<ReadingNote[]>("get_reading_notes", { "isbn13": props.book.isbn_13 })
 			.then((readingNotes) => setReadingNoteList(readingNotes))
+			.catch((e) => alert(e));
+	};
+
+	const switchCompleteBook = () => {
+		invoke<Book>("switch_complete_book", { "isbn13": props.book.isbn_13 })
+			.then((res) => { props.setBook(res) })
 			.catch((e) => alert(e));
 	};
 
@@ -67,6 +74,7 @@ export default function BookDetailModal({ ...props }: props) {
 					<div className="flex items-top gap-11 flex-wrap justify-center">
 						<div className="min-w-[128px]">
 							<Image className="w-full" src={props.book.image_url}></Image>
+							<Button className="mt-3 w-full" variant={props.book.is_complete ? "success" : "secondary"} onClick={switchCompleteBook}>{props.book.is_complete ? "読了" : "未読了"}</Button>
 							<Button className="mt-3 w-full" variant="danger" onClick={handleConfirmDialogOpen}>削除</Button>
 						</div>
 						<div className="max-w-[500px]">

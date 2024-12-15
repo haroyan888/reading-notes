@@ -38,6 +38,20 @@ pub async fn create_book(
 }
 
 #[tauri::command]
+pub async fn switch_complete_book(
+    app_handle: tauri::AppHandle,
+    isbn_13: String,
+) -> Result<BookInfo, String> {
+    let state_repos = get_state::<BookRepositoryForJson>(&app_handle).await?;
+    let book_repos = state_repos.lock().await;
+
+    book_repos
+        .switch_complete(&isbn_13)
+        .await
+        .map_err(|e| e.to_string())
+}
+
+#[tauri::command]
 pub async fn delete_book(app_handle: tauri::AppHandle, isbn_13: String) -> Result<(), String> {
     let state = get_state::<BookRepositoryForJson>(&app_handle).await?;
     let book_repos = state.lock().await;

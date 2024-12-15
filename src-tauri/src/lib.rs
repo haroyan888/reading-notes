@@ -35,6 +35,7 @@ pub fn run() {
             handler::book::all_book,
             handler::book::find_book,
             handler::book::create_book,
+            handler::book::switch_complete_book,
             handler::book::delete_book,
             handler::reading_note::get_reading_notes,
             handler::reading_note::create_reading_note,

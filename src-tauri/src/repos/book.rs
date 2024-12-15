@@ -19,6 +19,7 @@ pub trait BookRepository: Send + Sync + 'static {
     async fn find(&self, isbn_13: &str) -> Result<BookInfo, RepositoryError>;
     async fn all(&self) -> Result<Vec<BookInfo>, RepositoryError>;
     async fn create(&self, payload: BookInfo) -> Result<BookInfo, RepositoryError>;
+    async fn switch_complete(&self, isbn_13: &str) -> Result<BookInfo, RepositoryError>;
     async fn delete(&self, isbn_13: &str) -> Result<(), RepositoryError>;
 }
 
@@ -69,6 +70,7 @@ impl VolumeInfoResult {
             publisher: self.publisher.clone().unwrap_or_default(),
             published_date: self.published_date.clone(),
             image_url: self.image_links.thumbnail.clone(),
+            is_complete: false,
         }
     }
 }

@@ -13,6 +13,7 @@ export default function BookCard({ ...props }: props) {
 	const title_len_max = 30;
 	const description_len_max = 40;
 
+	const [book, setBook] = useState<Book>(props.book);
 	const [show, setShow] = useState<boolean>(false);
 	const handleOpen = () => setShow(true);
 	const handleClose = () => setShow(false);
@@ -22,29 +23,29 @@ export default function BookCard({ ...props }: props) {
 		<>
 			<button onClick={onClick} style={{ margin: "5px" }}>
 				<Card>
-					<Card.Body className="flex gap-5 w-[30rem] h-40">
-						<Card.Img variant="top" src={props.book.image_url} className="w-20" />
+					<Card.Body className="flex gap-5 w-[30rem] h-40" style={{ backgroundColor: book.is_complete ? "palegreen" : "" }}>
+						<Card.Img variant="top" src={book.image_url} className="w-20" />
 						<div className="content-center">
 							<Card.Title>
-								{props.book.title.length <= title_len_max
-									? props.book.title
-									: props.book.title.slice(0, title_len_max) + '...'}
+								{book.title.length <= title_len_max
+									? book.title
+									: book.title.slice(0, title_len_max) + '...'}
 							</Card.Title>
 							<Card.Subtitle className="mb-2 text-muted">
-								{props.book.authors.length == 1
-									? props.book.authors[0]
-									: props.book.authors[0] + ' ...'}
+								{book.authors.length == 1
+									? book.authors[0]
+									: book.authors[0] + ' ...'}
 							</Card.Subtitle>
 							<Card.Text className="my-auto">
-								{props.book.description.length <= description_len_max
-									? props.book.description
-									: props.book.description.slice(0, description_len_max) + ' ...'}
+								{book.description.length <= description_len_max
+									? book.description
+									: book.description.slice(0, description_len_max) + ' ...'}
 							</Card.Text>
 						</div>
 					</Card.Body>
 				</Card>
 			</button>
-			<BookDetailModal book={props.book} show={show} handleClose={handleClose} handleAfterDelete={props.handleAfterDelete} />
+			<BookDetailModal book={book} setBook={setBook} show={show} handleClose={handleClose} handleAfterDelete={props.handleAfterDelete} />
 		</>
 	)
 }
