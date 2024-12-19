@@ -6,16 +6,21 @@ import { TiPlus } from "react-icons/ti";
 import Book from "~/types/book";
 import BookCard from "~/components/BookCard/BookCard";
 import CreateBookModal from "~/components/Modals/CreateBookModal/CreateBookModal";
+import SearchBar from "~/components/SearchBar";
 
 export default function Index() {
 	const [books, setBooks] = useState<Book[]>([]);
+	const [showBooks, setShowBooks] = useState<Book[]>([]);
 	const [show, setShow] = useState(false);
 	const handleClose = () => setShow(false);
 	const handleShow = () => setShow(true);
 
 	const getBooksInfo = async () => {
 		invoke<Book[]>("all_book")
-			.then((books) => setBooks(books))
+			.then((books) => {
+				setBooks(books);
+				setShowBooks(books);
+			})
 			.catch((e) => {
 				console.log("all book: ", e);
 				setBooks([]);
@@ -33,9 +38,11 @@ export default function Index() {
 
 	return (
 		<>
-			<header className="w-full p-3 flex justify-end bg-blue-500"></header>
+			<header className="w-full p-3 flex justify-end bg-blue-500">
+				<SearchBar onChange={(keyword) => {setShowBooks(books.filter((book) => book.title.includes(keyword)))}} />
+			</header>
 			<div className="font-sans p-4 flex flex-wrap justify-content-center">
-				{books.map((book) => (
+				{showBooks.map((book) => (
 					<BookCard
 						book={book}
 						key={book.isbn_13}
